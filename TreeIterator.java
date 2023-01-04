@@ -5,6 +5,8 @@ import java.util.Stack;
 public class TreeIterator implements Iterator
 {
     private final Stack<Iterator> its;
+    private Object next;
+    private boolean next_invalid = true;
 
     public TreeIterator(Iterable it) {
         its = new Stack<Iterator>();
@@ -13,19 +15,25 @@ public class TreeIterator implements Iterator
 
     @Override
     public boolean hasNext() {
-        for (Iterator it : its)
-            if (it.hasNext())
-                return true;
-        return false;
+        while (next_invalid) {
+            if (its.empty())
+                return false;
+            if (its.peek().hasNext()) {
+                next = its.peek().next();
+                next_invalid = next instanceof Iterable;
+                if (next_invalid)
+                    its.push(((Iterable) next).iterator());
+            }
+            else
+                its.pop();
+        }
+        return true;
     }
 
     @Override
     public Object next() {
-        while (!its.peek().hasNext())
-            its.pop();
-        Object res;
-        while ((res = its.peek().next()) instanceof Iterable)
-            its.push(((Iterable) res).iterator());
-        return res;
+        hasNext();
+        next_invalid = true;
+        return next;
     }
 }
