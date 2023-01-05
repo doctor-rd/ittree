@@ -1,0 +1,6 @@
+#!/usr/bin/env jython
+
+import TreeIterable
+
+for i in TreeIterable([[1,2],[3,4,[5,[]]],6]):
+	print(i)
