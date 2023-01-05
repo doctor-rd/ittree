@@ -12,3 +12,10 @@ def all_iters(iterable):
 			yield i
 		except TypeError:
 			pass
+
+def isolate(list, obj):
+	for it in all_iters(list):
+		if obj in it and len(it)>1:
+			for i in range(len(it)):
+				if it[i] == obj:
+					it[i] = [obj]
